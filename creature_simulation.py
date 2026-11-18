@@ -18,6 +18,31 @@ class Creature:
     def __str__(self):
         return f"{self.name} (HP: {self.hp})"
 
+    
+
+class FireCreature(Creature):
+    def __init__(self, name, hp, attack_power, fire_level=0):
+        super().__init__(name, hp, attack_power)
+        self.fire_level = max(0, min(100, fire_level))
+
+    def emit_fire(self, new_fire_level):
+        self.fire_level = max(0, min(100, new_fire_level))
+        print(f"{self.name} emits fire at level {self.fire_level}.")
+
+    def attack(self, target):
+        if not self.is_alive():
+            print(f"{self.name} cannot attack because it is defeated.")
+            return
+
+        bonus = self.fire_level // 10
+        damage = self.attack_power + bonus
+        print(f"{self.name} blasts {target.name} with fire (level {self.fire_level})!")
+        print(f"Total damage: {self.attack_power} + {bonus} fire bonus = {damage}")
+        target.hp = max(0, target.hp - damage)
+        print(f"{target.name} HP is now {target.hp}")
+
+
+
 if __name__ == "__main__":
     print("=== Creature Class Tests ===\n")
 
@@ -67,5 +92,17 @@ if __name__ == "__main__":
     print(f"Slime should be at HP 0 → Actual: {slime.hp}")
     print()
 
+    # Test 7: Fire Creature ATK with Fire Bonus
+    print("Test 7: Fire Imp attacks Practice Dummy with fire")
+    imp = FireCreature("Fire Imp", 40, 6)
+    imp.emit_fire(150)
+    print(f"Fire level should be capped at 100 → Actual: {imp.fire_level}")
+    imp.emit_fire(50)
+    dummy = Creature("Practice Dummy", 40, 0)
+    imp.attack(dummy)
+    print(f"Dummy HP should be 29 → Actual: {dummy.hp}")
+    print()
+
+    
     print("=== Tests Completed ===")
     print()
